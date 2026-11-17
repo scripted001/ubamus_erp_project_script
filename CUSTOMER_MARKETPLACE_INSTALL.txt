@@ -1,0 +1,27 @@
+UBAMUS CUSTOMER MARKETPLACE / CUSTOMER AREA UPGRADE
+
+FILES
+- marketplace_upgraded.php: replacement for your existing marketplace.php. Rename this file to marketplace.php when installing.
+- customer_auth.php: separate customer login/register + OTP verification page.
+- customer_dashboard.php: customer dashboard with messenger, purchase history and cart.
+- customer_area_common.php: shared customer-area authentication/layout helpers.
+
+INSTALLATION
+1. Back up the current marketplace.php and database.
+2. Upload all four PHP files into the same public directory as marketplace.php, config/db.php and company_data.php.
+3. Rename marketplace_upgraded.php to marketplace.php (or copy its contents over the existing marketplace.php).
+4. Confirm config/db.php creates $pdo and company_data.php sets $company_id for the current company's marketplace host/domain.
+5. Ensure the PHP hosting environment can send mail. The OTP page uses PHP mail(). For reliable delivery on Hostinger, configure authenticated SMTP through your existing mail library/SMTP settings; PHP mail() may not be enabled or deliver reliably.
+6. Test registration, OTP, login OTP, pre-login cart retention, dashboard, order history and messenger with a test customer.
+
+DATABASE
+- The current SQL dump already has customer_accounts, marketplace_carts, marketplace_cart_items, marketplace_orders, marketplace_order_items, chat_conversations, chat_participants and chat_messages.
+- customer_auth.php and customer_dashboard.php create marketplace_customer_otps automatically if missing.
+- No destructive database migration is included.
+
+IMPORTANT NOTES
+- OTP delivery cannot be guaranteed until mail/SMTP is configured on the server. If mail() fails, the account remains pending and cannot sign in.
+- Customer messenger creates/reuses direct conversations with active company users whose roles identify them as Head Administrator or Branch Administrator/Branch Manager. Branch conversations are limited to the customer's recorded location. Verify your actual staff role labels match these patterns.
+- This first customer dashboard messenger supports text messages. It uses the existing chat tables and does not implement file attachments, typing indicators, read receipts or realtime polling.
+- Purchase history shows marketplace_orders and marketplace_order_items. Older ERP sales not placed through the marketplace are not automatically merged into this history.
+- Marketplace product and service catalogue counts are scoped to the current company_id. Adding a product/service is also validated against that same company.
