@@ -1,0 +1,351 @@
+<?php
+include('../config/db.php');
+include('../config/validation.php');
+include('user_data.php');
+include('../app_data.php');
+include('../company_data.php');
+
+
+$companyid = $_SESSION['company_id'];
+?>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+      <title>
+        <?php echo $company_name; ?> |  Staff Area
+      </title>
+       
+         <link rel="stylesheet" href="../fontawesome/css/all.css">
+         <link href="style.css" rel="stylesheet"><script data-cfasync="false" nonce="ff1f9a24-18a4-4614-8917-7c27c5c96a86">try{(function(w,d){!function(fv,fw,fx,fy){if(fv.zaraz)console.error("zaraz is loaded twice");else{fv[fx]=fv[fx]||{};fv[fx].executed=[];fv.zaraz={deferred:[],listeners:[]};fv.zaraz._v="5858";fv.zaraz._n="ff1f9a24-18a4-4614-8917-7c27c5c96a86";fv.zaraz.q=[];fv.zaraz._f=function(fz){return async function(){var fA=Array.prototype.slice.call(arguments);fv.zaraz.q.push({m:fz,a:fA})}};for(const fB of["track","set","debug"])fv.zaraz[fB]=fv.zaraz._f(fB);fv.zaraz.init=()=>{var fC=fw.getElementsByTagName(fy)[0],fD=fw.createElement(fy),fE=fw.getElementsByTagName("title")[0];fE&&(fv[fx].t=fw.getElementsByTagName("title")[0].text);fv[fx].x=Math.random();fv[fx].w=fv.screen.width;fv[fx].h=fv.screen.height;fv[fx].j=fv.innerHeight;fv[fx].e=fv.innerWidth;fv[fx].l=fv.location.href;fv[fx].r=fw.referrer;fv[fx].k=fv.screen.colorDepth;fv[fx].n=fw.characterSet;fv[fx].o=(new Date).getTimezoneOffset();if(fv.dataLayer)for(const fF of Object.entries(Object.entries(dataLayer).reduce(((fG,fH)=>({...fG[1],...fH[1]})),{})))zaraz.set(fF[0],fF[1],{scope:"page"});fv[fx].q=[];for(;fv.zaraz.q.length;){const fI=fv.zaraz.q.shift();fv[fx].q.push(fI)}fD.defer=!0;for(const fJ of[localStorage,sessionStorage])Object.keys(fJ||{}).filter((fL=>fL.startsWith("_zaraz_"))).forEach((fK=>{try{fv[fx]["z_"+fK.slice(7)]=JSON.parse(fJ.getItem(fK))}catch{fv[fx]["z_"+fK.slice(7)]=fJ.getItem(fK)}}));fD.referrerPolicy="origin";fD.src="cdn-cgi/zaraz/sd0d9.js?z="+btoa(encodeURIComponent(JSON.stringify(fv[fx])));fC.parentNode.insertBefore(fD,fC)};["complete","interactive"].includes(fw.readyState)?zaraz.init():fv.addEventListener("DOMContentLoaded",zaraz.init)}}(w,d,"zarazData","script");window.zaraz._p=async eC=>new Promise((eD=>{if(eC){eC.e&&eC.e.forEach((eE=>{try{const eF=d.querySelector("script[nonce]"),eG=eF?.nonce||eF?.getAttribute("nonce"),eH=d.createElement("script");eG&&(eH.nonce=eG);eH.innerHTML=eE;eH.onload=()=>{d.head.removeChild(eH)};d.head.appendChild(eH)}catch(eI){console.error(`Error executing script: ${eE}\n`,eI)}}));Promise.allSettled((eC.f||[]).map((eJ=>fetch(eJ[0],eJ[1]))))}eD()}));zaraz._p({"e":["(function(w,d){})(window,document)"]});})(window,document)}catch(e){throw fetch("/cdn-cgi/zaraz/t"),e;};</script></head>
+
+    <body x-data="{ page: 'ecommerce', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }" x-init=" darkMode = JSON.parse(localStorage.getItem('darkMode')); $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))" :class="{'dark bg-gray-900': darkMode === true}">
+
+        <!-- ===== Page Wrapper Start ===== -->
+         <div class="flex h-screen overflow-hidden">
+            <?php include('sidebar.php');?>
+            <!-- ===== Content Area Start ===== -->
+            <div class="relative flex flex-1 flex-col  overflow-x-hidden overflow-y-auto">
+                <!-- ===== Main Content Start ===== -->
+                <main>
+                        <?php
+                        include('header.php');
+                        ?>
+                        <div class="mx-auto max-w-(--breakpoint-2xl) p-4 md:p-6">
+                          <form method="POST" action="insert_production.php" id="production_form">
+  <div class="grid grid-cols-6 gap-4 md:gap-6">
+    <div class="col-span-12 space-y-6 xl:col-span-7 bg-white dark:bg-dark-900 p-6 rounded-2xl shadow-lg">
+      <h2 class="text-2xl  text-gray-400 thin-txt dark:text-white">Inventory Lab!</h2>
+      <br>
+
+      <!-- Batch number Identification -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-400">Product Batch Number</label>
+          <input type="text" name="batch_number" id="batch_number" value="" readonly
+                 class="w-full px-4 py-3 border rounded-lg dark:bg-dark-900 dark:text-white" />
+        </div>
+      
+        <hr>
+       <!-- stock location -->
+      <div>
+
+  <select name="location_id" id="location_id"
+    class="w-full px-4 py-3 border rounded-lg dark:bg-dark-900 dark:text-white">
+    <option value="">Choose factory </option>
+
+    <?php
+    // Fetch locations strictly by company_id only
+    $stmt = $pdo->prepare("
+        SELECT id, name, type
+        FROM locations
+        WHERE company_id = ?
+        ORDER BY name ASC
+    ");
+    $stmt->execute([$companyid]);
+
+    while ($row = $stmt->fetch()) {
+        echo '<option value="'.$row['id'].'">'
+            . htmlspecialchars($row['name'])
+            . ' ('.htmlspecialchars($row['type']).')'
+            . '</option>';
+    }
+    ?>
+  </select>
+</div>
+<!-- stock location Section -->
+
+<div>
+
+
+<select name="unit_type" id="unitTypeSelect" required
+      class="w-full h-11 px-4 py-2.5 text-sm border border-gray-300 rounded-lg dark:border-gray-700 dark:bg-dark-900 dark:text-white/90">
+
+      <option value="">Select unit type</option>
+      <option value="Bulk Packaging">Bulk Packaging</option>
+      <option value="Fabric / Textile Style Units">Fabric / Textile Style Units</option>
+      <option value="Foodstuff-Specific">Foodstuff-Specific</option>
+      <option value="General / Universal Units">General / Universal Units</option>
+      <option value="Logistics / Large Supply Units">Logistics / Large Supply Units</option>
+      <option value="Paper / Flat Items">Paper / Flat Items</option>
+      <option value="Retail-Wholesale Hybrid Units">Retail-Wholesale Hybrid Units</option>
+      
+    </select>
+</div>
+<div>
+<select name="unit_id" id="unitSelect" class="w-full px-4 py-3 text-sm text-gray-800 bg-transparent border border-gray-300 rounded-lg dark:bg-dark-900 h-11 shadow-theme-xs focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:text-white/90">
+        <option value="">Select unit</option>
+        
+      </select>
+
+</div>
+        
+
+        <div>
+        
+          <input type="text" name="product_name" id="new_product_name " placeholder="Enter new product name" class="w-full px-4 py-3 border rounded-lg dark:bg-dark-900 dark:text-white" />  
+        </div>
+      </div>
+
+      <!-- 2. Batch Info -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        
+        <div>
+          
+          <input type="number" name="quantity_produced" id="quantity_produced" placeholder="Enter quantity" class="w-full px-4 py-3 border rounded-lg dark:bg-dark-900 dark:text-white" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-400">Product Description</label>
+          <textarea  name="description" id="quantity_produced"  class="w-full px-4 py-3 border rounded-lg dark:bg-dark-900 dark:text-white"></textarea>
+        </div>
+      </div>
+
+      <!-- 3. Raw Materials -->
+      <div class="mt-6">
+        <h3 class="text-lg font-medium text-gray-800 dark:text-white mb-2">Raw Materials</h3>
+        <table class="w-full text-left border rounded-lg">
+          <thead class="bg-gray-100 dark:bg-dark-800">
+            <tr>
+              <th class="p-2">Material</th>
+              <th class="p-2">Quantity Used</th>
+              <th class="p-2">Unit Cost</th>
+              <th class="p-2">Total Cost</th>
+              <th class="p-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="raw_materials_body">
+            <!-- JS will populate -->
+          </tbody>
+        </table>
+        <button type="button" id="add_raw_material" class="mt-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg" style="width: 240px;padding: 8px;border-radius: 8px;background-color: #6839ebff;color: #fff;">+ Add Raw Material</button>
+      </div>
+
+      <!-- 4. Services -->
+      <div class="mt-6">
+        <h3 class="text-lg font-medium text-gray-800 dark:text-white mb-2">Production Services</h3>
+        <table class="w-full text-left border rounded-lg">
+          <thead class="bg-gray-100 dark:bg-dark-800">
+            <tr>
+              <th class="p-2">Service</th>
+              <th class="p-2">Cost</th>
+              <th class="p-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="services_body">
+            <!-- JS will populate -->
+          </tbody>
+        </table>
+        <button type="button" id="add_service" class="mt-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg" style="width: 240px;padding: 8px;border-radius: 8px;background-color: #6839ebff;color: #fff;">+ Add Service</button>
+      </div>
+
+      <!-- 5. Summary -->
+      <div class="mt-6 bg-gray-50 dark:bg-dark-800 p-4 rounded-lg space-y-2">
+        <p>Total Raw Materials Cost: <span id="total_materials_cost">0</span></p>
+        <p>Total Services Cost: <span id="total_services_cost">0</span></p>
+        <p>Total Production Cost: <span id="total_production_cost">0</span></p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+         <div>
+            <label>Unit Cost Price</label>
+            <input type="text" name="unit_cost" id="unit_cost" class="w-full px-4 py-2 border rounded-lg dark:bg-dark-900 dark:text-white" readonly />
+        </div>  
+        <div>
+            <label>Profit Margin (%)</label>
+            <input type="number" name="profit_margin" id="profit_margin" value="20" class="w-full px-4 py-2 border rounded-lg dark:bg-dark-900 dark:text-white" />
+          </div>
+          <div>
+            <label>Unit Selling Price</label>
+            <input type="text" name="unit_selling_price" id="unit_selling_price" class="w-full px-4 py-2 border rounded-lg dark:bg-dark-900 dark:text-white" readonly />
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          
+        </div> 
+        <!-- stock Status -->
+<div>
+  <label class="block text-sm font-medium text-gray-700 dark:text-gray-400">
+    Production Status
+  </label>
+
+  <select name="status" id="location_id"
+    class="w-full px-4 py-3 border rounded-lg dark:bg-dark-900 dark:text-white">
+    <option value="">-- Select Production Status --</option>
+    <option value="unfinished">Unfinished</option>
+    <option value="finished">Finished</option>
+  </select>
+</div>
+      </div>
+
+      <div class="mt-6">
+        <button type="submit" name="finalize_production" class="px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-lg w-full text-center font-semibold" style="width: 340px;padding: 8px;border-radius: 8px;background-color: #6839ebff;color: #fff;">Render</button>
+      </div>
+    </div>
+  </div>
+</form>
+
+                        </div>
+                </main>
+                <!-- ===== Main Content End ===== -->
+            </div>
+            <!-- ===== Content Area End ===== -->  
+        </div>
+        <!-- footer session begins -->
+        <?php include('footer.php'); ?>
+        <!-- footer session ends -->
+        <!-- ===== Page Wrapper End ===== -->
+        <script data-cfasync="false" src="cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script defer src="bundle.js"></script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"rayId":"95aeba634cdfb6e3","version":"2025.6.2","r":1,"serverTiming":{"name":{"cfExtPri":true,"cfEdge":true,"cfOrigin":true,"cfL4":true,"cfSpeedBrain":true,"cfCacheStatus":true}},"token":"67f7a278e3374824ae6dd92295d38f77","b":1}' crossorigin="anonymous"></script>
+        <!-- Script for the unit reflection -->
+  <script>
+document.getElementById('unitTypeSelect').addEventListener('change', function () {
+    let unitType = this.value;
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "fetch_units_by_type.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    xhr.onload = function () {
+        if (this.status === 200) {
+            document.getElementById('unitSelect').innerHTML = this.responseText;
+        }
+    };
+
+    xhr.send("unit_type=" + encodeURIComponent(unitType));
+});
+</script>
+ <script>
+let rawMaterialsCount = 0;
+let servicesCount = 0;
+
+// Recalculate totals and unit price
+function recalcTotals() {
+  let totalMaterials = 0;
+  document.querySelectorAll('.rm_total').forEach(el => totalMaterials += parseFloat(el.value||0));
+  document.getElementById('total_materials_cost').innerText = totalMaterials.toFixed(2);
+
+  let totalServices = 0;
+  document.querySelectorAll('.srv_cost').forEach(el => totalServices += parseFloat(el.value||0));
+  document.getElementById('total_services_cost').innerText = totalServices.toFixed(2);
+
+  let totalProduction = totalMaterials + totalServices;
+  document.getElementById('total_production_cost').innerText = totalProduction.toFixed(2);
+
+  let qty = parseFloat(document.getElementById('quantity_produced').value || 1);
+  let unitCost = totalProduction / qty;
+  document.getElementById('unit_cost').value = unitCost.toFixed(2); // Show unit cost price
+
+  let margin = parseFloat(document.getElementById('profit_margin').value || 0)/100;
+  let unitSellingPrice = unitCost * (1 + margin);
+  document.getElementById('unit_selling_price').value = unitSellingPrice.toFixed(2);
+
+}
+
+// Auto-generate batch number
+function generateBatchNumber() {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  const random = Math.floor(Math.random() * 900 + 100);
+  const batchNumber = `BATCH-${yyyy}${mm}${dd}-${random}`;
+  document.getElementById('batch_number').value = batchNumber;
+}
+
+// Generate batch number on page load
+window.addEventListener('DOMContentLoaded', generateBatchNumber);
+
+// Add a new raw material row
+function addRawMaterial() {
+  const tbody = document.getElementById('raw_materials_body');
+  const index = tbody.children.length;
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td><input type="text" name="raw_materials[${index}][name]" class="w-full px-2 py-1 border rounded" placeholder="Material Name"></td>
+    <td><input type="number" name="raw_materials[${index}][qty]" class="w-full px-2 py-1 border rm_qty" value="0"></td>
+    <td><input type="number" name="raw_materials[${index}][unitCost]" class="w-full px-2 py-1 border rm_unit" value="0"></td>
+    <td><input type="number" class="w-full px-2 py-1 border rm_total" value="0" readonly></td>
+    <td><button type="button" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded remove-btn" style="width: 140px;padding: 8px;border-radius: 8px;background-color: #e03a3aff;color: #fff;">Remove</button></td>
+  `;
+  tbody.appendChild(row);
+
+  row.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', () => {
+      const tr = inp.closest('tr');
+      const qty = parseFloat(tr.querySelector('.rm_qty').value || 0);
+      const unit = parseFloat(tr.querySelector('.rm_unit').value || 0);
+      tr.querySelector('.rm_total').value = (qty*unit).toFixed(2);
+      recalcTotals();
+    });
+  });
+
+  row.querySelector('.remove-btn').addEventListener('click', () => {
+    row.remove();
+    recalcTotals();
+    // Re-index names after removal
+    Array.from(tbody.children).forEach((r, i) => {
+      r.querySelector('input[name*="[name]"]').name = `raw_materials[${i}][name]`;
+      r.querySelector('input[name*="[qty]"]').name = `raw_materials[${i}][qty]`;
+      r.querySelector('input[name*="[unitCost]"]').name = `raw_materials[${i}][unitCost]`;
+    });
+  });
+}
+
+// Add a new service row
+function addService() {
+  const tbody = document.getElementById('services_body');
+  const index = tbody.children.length;
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td><input type="text" name="services[${index}][name]" class="w-full px-2 py-1 border srv_name" placeholder="Service Name"></td>
+    <td><input type="number" name="services[${index}][cost]" class="w-full px-2 py-1 border srv_cost" value="0"></td>
+    <td><button type="button" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded remove-btn" style="width: 140px;padding: 8px;border-radius: 8px;background-color: #e03a3aff;color: #fff;">Remove</button></td>
+  `;
+  tbody.appendChild(row);
+
+  row.querySelectorAll('input').forEach(inp => inp.addEventListener('input', recalcTotals));
+  row.querySelector('.remove-btn').addEventListener('click', () => {
+    row.remove();
+    recalcTotals();
+    // Re-index names after removal
+    Array.from(tbody.children).forEach((r, i) => {
+      r.querySelector('input[name*="[name]"]').name = `services[${i}][name]`;
+      r.querySelector('input[name*="[cost]"]').name = `services[${i}][cost]`;
+    });
+  });
+}
+
+// Event listeners for adding rows and recalculating totals
+document.getElementById('add_raw_material').addEventListener('click', addRawMaterial);
+document.getElementById('add_service').addEventListener('click', addService);
+document.getElementById('profit_margin').addEventListener('input', recalcTotals);
+document.getElementById('quantity_produced').addEventListener('input', recalcTotals);
+</script>
+
+    </body>
+
+</html>
