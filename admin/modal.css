@@ -1,0 +1,37 @@
+@media screen and (max-width: 500px) {
+    #fmodal {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.256);
+    justify-content: center;
+    align-items: center;
+}
+.mbox {
+    width: 90%;
+    height: 90%;
+    display: block;
+    background-color: #fff;
+    border-radius: 5px;
+}
+}
+
+@media screen and (min-width: 500px) {
+    #fmodal {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.256);
+    justify-content: center;
+    align-items: center;
+}
+.mbox {
+    width: 90%;
+    height: 90%;
+    display: block;
+    background-color: #fff;
+    border-radius: 5px;
+}
+}
