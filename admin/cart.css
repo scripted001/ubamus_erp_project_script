@@ -1,0 +1,31 @@
+
+.cart-table {
+    width: 100%;
+    min-height: 500px;
+    display: block;
+    background-color: transparent;
+}
+.cart-head {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.cart-head h3 {
+    font-size: 1.2rem;
+}
+.table-box {
+    width: 100%;
+    min-height: 80%;
+}
+.table-box table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.table-box table th, td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #DDD;
+}
+

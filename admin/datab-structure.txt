@@ -1,0 +1,770 @@
+
+
+127.0.0.1/newdb/about/		http://localhost/phpmyadmin/index.php?route=/table/sql&db=newdb&table=about
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE about;
+
+
+
+about	CREATE TABLE `about` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `company_id` int(100) NOT NULL,
+  `who_we_are` text NOT NULL,
+  `our_vision` text NOT NULL,
+  `our_mission` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci	
+
+
+127.0.0.1/newdb/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=newdb
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE companies;
+
+
+
+companies	CREATE TABLE `companies` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `harsh` varchar(255) NOT NULL,
+  `creator` varchar(255) NOT NULL,
+  `company_name` varchar(255) NOT NULL,
+  `company_slug` varchar(255) NOT NULL,
+  `company_logo` varchar(255) NOT NULL,
+  `company_domain` varchar(255) DEFAULT NULL,
+  `company_industry` varchar(100) NOT NULL,
+  `company_office_address` text NOT NULL,
+  `company_email` varchar(255) NOT NULL,
+  `company_mobile` varchar(50) NOT NULL,
+  `company_head_office` text NOT NULL,
+  `company_state` varchar(100) NOT NULL,
+  `company_city` varchar(100) NOT NULL,
+  `location_id` varchar(255) NOT NULL,
+  `date_created` date NOT NULL DEFAULT curdate(),
+  `time_created` time NOT NULL DEFAULT curtime(),
+  `status` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci	
+
+
+127.0.0.1/newdb/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=newdb
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE customer_debts;
+
+
+
+customer_debts	CREATE TABLE `customer_debts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `sale_id` int(11) DEFAULT NULL,
+  `customer_id` int(11) DEFAULT NULL,
+  `company_id` int(11) DEFAULT NULL,
+  `location_id` int(11) DEFAULT NULL,
+  `total_amount` decimal(12,2) DEFAULT NULL,
+  `amount_paid` decimal(14,2) NOT NULL,
+  `balance` decimal(12,2) DEFAULT NULL,
+  `due_date` date DEFAULT NULL,
+  `status` varchar(100) NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci	
+
+127.0.0.1/newdb/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=newdb
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE debt_payments;
+
+
+
+debt_payments	CREATE TABLE `debt_payments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `debt_id` int(11) DEFAULT NULL,
+  `sale_id` int(11) DEFAULT NULL,
+  `customer_id` int(11) DEFAULT NULL,
+  `amount_paid` decimal(12,2) DEFAULT NULL,
+  `payment_method` varchar(50) DEFAULT NULL,
+  `payment_date` datetime DEFAULT NULL,
+  `received_by` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci	
+
+
+127.0.0.1/newdb/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=newdb
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE expenses;
+
+
+
+expenses	CREATE TABLE `expenses` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `company_id` int(255) NOT NULL,
+  `expense_title` varchar(255) NOT NULL,
+  `type` varchar(100) NOT NULL,
+  `amount` decimal(12,2) NOT NULL,
+  `location_id` int(11) DEFAULT NULL,
+  `staff_responsible` varchar(100) DEFAULT NULL,
+  `created_by` varchar(100) NOT NULL,
+  `description` text DEFAULT NULL,
+  `receipt` varchar(255) DEFAULT NULL,
+  `created_at` varchar(100) DEFAULT NULL,
+  `approved_by` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci	
+
+127.0.0.1/newdb/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=newdb
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE jobs;
+
+
+
+jobs	CREATE TABLE `jobs` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `company_id` int(100) NOT NULL,
+  `location_id` int(100) NOT NULL,
+  `customer_id` int(100) NOT NULL,
+  `user_id` int(100) NOT NULL,
+  `invoice_number` int(100) NOT NULL,
+  `customer_name` varchar(100) NOT NULL,
+  `customer_phone` varchar(100) NOT NULL,
+  `customer_email` varchar(100) NOT NULL,
+  `grand_total` decimal(14,2) NOT NULL,
+  `discount_percent` int(100) NOT NULL,
+  `discount_amount` decimal(14,2) NOT NULL,
+  `final_total` decimal(14,2) NOT NULL,
+  `notes` varchar(100) NOT NULL,
+  `payment_status` varchar(100) NOT NULL,
+  `amount_paid` decimal(14,2) NOT NULL,
+  `balance` decimal(14,2) NOT NULL,
+  `due_date` varchar(100) NOT NULL,
+  `created_at` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci	
+
+
+127.0.0.1/newdb/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=newdb
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE job_items;
+
+
+
+job_items	CREATE TABLE `job_items` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `job_id` int(100) NOT NULL,
+  `service_id` int(100) NOT NULL,
+  `service_number` varchar(100) NOT NULL,
+  `service_items_id` int(100) NOT NULL,
+  `quantity` int(100) NOT NULL,
+  `unit_cost` decimal(14,2) NOT NULL,
+  `total_cost` decimal(14,2) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci	
+
+
+
+
+SHOW CREATE TABLE job_categories;
+
+
+
+job_categories	CREATE TABLE `job_categories` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `company_id` int(255) NOT NULL,
+  `location_id` int(255) NOT NULL,
+  `created_by` varchar(255) NOT NULL,
+  `date` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci	
+
+127.0.0.1/newdb/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=newdb
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE locations;
+
+
+
+locations	CREATE TABLE `locations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `company_id` int(11) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `created_at` varchar(100) DEFAULT NULL,
+  `created_by` varchar(100) NOT NULL,
+  `address_line1` varchar(255) DEFAULT NULL,
+  `address_line2` varchar(255) DEFAULT NULL,
+  `city` varchar(100) DEFAULT NULL,
+  `state` varchar(100) DEFAULT NULL,
+  `lga` varchar(255) NOT NULL,
+  `status` int(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci	
+
+127.0.0.1/newdb/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=newdb
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE otp_verification;
+
+
+
+otp_verification	CREATE TABLE `otp_verification` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `tracking` int(100) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `otp` varchar(10) NOT NULL,
+  `created_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=137 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci	
+
+127.0.0.1/newdb/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=newdb
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE production_raw_materials;
+
+
+
+production_raw_materials	CREATE TABLE `production_raw_materials` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `company_id` int(100) NOT NULL,
+  `production_id` int(100) NOT NULL,
+  `quantity_used` int(100) NOT NULL,
+  `unit_cost` varchar(100) NOT NULL,
+  `total_cost` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci	
+
+127.0.0.1/newdb/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=newdb
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE production_services;
+
+
+
+production_services	CREATE TABLE `production_services` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `production_id` int(100) NOT NULL,
+  `service_name` varchar(100) NOT NULL,
+  `cost` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci	
+
+127.0.0.1/newdb/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=newdb
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE production_team;
+
+
+
+production_team	CREATE TABLE `production_team` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `company_id` int(100) NOT NULL,
+  `location_id` int(100) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `created_by` int(100) NOT NULL,
+  `created_at` int(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci	
+
+127.0.0.1/newdb/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=newdb
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE production_team_members;
+
+
+
+production_team_members	CREATE TABLE `production_team_members` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `production_team_id` int(100) NOT NULL,
+  `staff_id` int(100) NOT NULL,
+  `date` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci	
+
+127.0.0.1/newdb/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=newdb
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE products;
+
+
+
+products	CREATE TABLE `products` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `company_id` int(100) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `slug` varchar(100) NOT NULL,
+  `barcode` varchar(100) NOT NULL,
+  `category_id` int(100) NOT NULL,
+  `stock_type` varchar(100) NOT NULL,
+  `unit_id` int(100) NOT NULL,
+  `cost_price` varchar(100) NOT NULL,
+  `selling_price` varchar(100) NOT NULL,
+  `description` text NOT NULL,
+  `created_at` varchar(50) NOT NULL,
+  `created_by` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci	
+
+127.0.0.1/newdb/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=newdb
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE product_categories;
+
+
+
+product_categories	CREATE TABLE `product_categories` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `company_id` int(10) unsigned NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `parent_id` int(50) DEFAULT NULL,
+  `unit_type` varchar(100) NOT NULL,
+  `unit_id` int(100) NOT NULL,
+  `stock_type` varchar(100) NOT NULL,
+  `description` text DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `created_by` int(10) unsigned DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`),
+  KEY `company_id` (`company_id`),
+  KEY `parent_id` (`unit_type`)
+) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci	
+
+127.0.0.1/newdb/product_features/		http://localhost/phpmyadmin/index.php?route=/table/sql&db=newdb&table=product_features
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE product_images;
+
+
+
+product_images	CREATE TABLE `product_images` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `image_path` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci	
+
+
+127.0.0.1/newdb/product_features/		http://localhost/phpmyadmin/index.php?route=/table/sql&db=newdb&table=product_features
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE product_features;
+
+
+
+product_features	CREATE TABLE `product_features` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `feature_name` varchar(255) NOT NULL,
+  `feature_value` text NOT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci	
+
+127.0.0.1/newdb/product_features/		http://localhost/phpmyadmin/index.php?route=/table/sql&db=newdb&table=product_features
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE reg_email;
+
+
+
+reg_email	CREATE TABLE `reg_email` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `email` varchar(100) NOT NULL,
+  `created_at` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci	
+
+127.0.0.1/newdb/product_features/		http://localhost/phpmyadmin/index.php?route=/table/sql&db=newdb&table=product_features
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE sales;
+
+
+
+sales	CREATE TABLE `sales` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `invoice_number` varchar(50) NOT NULL,
+  `customer_id` int(100) NOT NULL,
+  `company_id` int(11) NOT NULL,
+  `location_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `customer_name` varchar(255) DEFAULT NULL,
+  `customer_phone` varchar(50) DEFAULT NULL,
+  `customer_email` varchar(255) NOT NULL,
+  `grand_total` decimal(14,2) NOT NULL,
+  `discount_percent` int(100) NOT NULL,
+  `discount_amount` decimal(14,2) NOT NULL,
+  `final_total` decimal(14,2) NOT NULL,
+  `notes` text DEFAULT NULL,
+  `created_at` date NOT NULL DEFAULT current_timestamp(),
+  `payment_status` varchar(20) DEFAULT 'full',
+  `amount_paid` decimal(12,2) DEFAULT 0.00,
+  `balance` decimal(12,2) DEFAULT 0.00,
+  `due_date` date DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=245 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci	
+
+127.0.0.1/newdb/product_features/		http://localhost/phpmyadmin/index.php?route=/table/sql&db=newdb&table=product_features
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE sale_items;
+
+
+
+sale_items	CREATE TABLE `sale_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `sale_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `quantity` decimal(12,2) NOT NULL,
+  `unit_price` decimal(14,2) NOT NULL,
+  `total_price` decimal(14,2) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `sale_id` (`sale_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=243 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci	
+
+127.0.0.1/newdb/product_features/		http://localhost/phpmyadmin/index.php?route=/table/sql&db=newdb&table=product_features
+Your SQL query has been executed successfully.
+
+127.0.0.1/newdb/services/		http://localhost/phpmyadmin/index.php?route=/table/sql&db=newdb&table=services
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE services;
+
+
+
+services	CREATE TABLE `services` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `company_id` int(11) NOT NULL,
+  `category_id` int(100) NOT NULL,
+  `location_id` int(11) NOT NULL,
+  `service_number` varchar(100) NOT NULL,
+  `service_name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `materials_cost` decimal(18,2) DEFAULT 0.00,
+  `external_skill_cost` decimal(18,2) DEFAULT 0.00,
+  `total_cost` decimal(18,2) DEFAULT 0.00,
+  `created_by` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `service_number` (`service_number`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci	
+
+
+127.0.0.1/newdb/services/		http://localhost/phpmyadmin/index.php?route=/table/sql&db=newdb&table=services
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE service_items;
+
+
+
+service_items	CREATE TABLE `service_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `service_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `quantity_used` decimal(18,2) NOT NULL,
+  `unit_cost` decimal(18,2) NOT NULL,
+  `total_cost` decimal(18,2) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci	
+
+
+127.0.0.1/newdb/services/		http://localhost/phpmyadmin/index.php?route=/table/sql&db=newdb&table=services
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE service_skills;
+
+
+
+service_skills	CREATE TABLE `service_skills` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `service_id` int(11) NOT NULL,
+  `skill_name` varchar(255) NOT NULL,
+  `fee` decimal(18,2) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci	
+
+
+SHOW CREATE TABLE slides;
+
+
+
+slides	CREATE TABLE `slides` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `company_id` int(100) NOT NULL,
+  `created_by` varchar(100) NOT NULL,
+  `slide_order` int(100) NOT NULL,
+  `headline` varchar(100) NOT NULL,
+  `description` text NOT NULL,
+  `desktop_image` text NOT NULL,
+  `mobile_image` text NOT NULL,
+  `created_at` int(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci	
+
+127.0.0.1/newdb/product_features/		http://localhost/phpmyadmin/index.php?route=/table/sql&db=newdb&table=product_features
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE staffs;
+
+
+
+staffs	CREATE TABLE `staffs` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `company_id` int(100) NOT NULL,
+  `location_id` int(100) NOT NULL,
+  `firstname` varchar(100) NOT NULL,
+  `lastname` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `phone` varchar(100) NOT NULL,
+  `role` varchar(100) NOT NULL,
+  `address` varchar(100) NOT NULL,
+  `profile` text NOT NULL,
+  `refree1name` varchar(100) NOT NULL,
+  `refree1phone` varchar(100) NOT NULL,
+  `refree2name` varchar(100) NOT NULL,
+  `refree2phone` varchar(100) NOT NULL,
+  `created_at` timestamp(6) NOT NULL DEFAULT current_timestamp(6) ON UPDATE current_timestamp(6),
+  `created_by` varchar(100) NOT NULL,
+  `status` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=97 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci	
+
+127.0.0.1/newdb/product_features/		http://localhost/phpmyadmin/index.php?route=/table/sql&db=newdb&table=product_features
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE stocks;
+
+
+
+stocks	CREATE TABLE `stocks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `company_id` int(11) NOT NULL,
+  `location_id` int(11) NOT NULL,
+  `quantity` int(100) DEFAULT NULL,
+  `supplier` varchar(100) NOT NULL,
+  `created_at` varchar(100) DEFAULT NULL,
+  `stocked_by` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`),
+  KEY `company_id` (`company_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci	
+
+127.0.0.1/newdb/stocks/		http://localhost/phpmyadmin/index.php?route=/table/sql&db=newdb&table=stocks
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE stocks_assigned;
+
+
+
+stocks_assigned	CREATE TABLE `stocks_assigned` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `stock_id` int(100) NOT NULL,
+  `company_id` int(100) NOT NULL,
+  `location_id` int(100) NOT NULL,
+  `assigned_by` int(100) NOT NULL,
+  `assigned_to` int(100) NOT NULL,
+  `quantity` int(100) NOT NULL,
+  `date` varchar(50) NOT NULL,
+  `time` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+127.0.0.1/newdb/stocks_assigned/		http://localhost/phpmyadmin/index.php?route=/table/sql&db=newdb&table=stocks_assigned
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE stock_in;
+
+
+
+stock_in	CREATE TABLE `stock_in` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `product_id` int(100) NOT NULL,
+  `stock_id` int(100) NOT NULL,
+  `company_id` int(100) NOT NULL,
+  `location_id` int(100) NOT NULL,
+  `transfer_ID` varchar(100) NOT NULL,
+  `quantity` int(100) NOT NULL,
+  `type` varchar(100) NOT NULL,
+  `supplier` text NOT NULL,
+  `created_at` varchar(100) NOT NULL,
+  `recorded_by` int(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci	
+
+
+
+127.0.0.1/newdb/stocks_assigned/		http://localhost/phpmyadmin/index.php?route=/table/sql&db=newdb&table=stocks_assigned
+Your SQL query has been executed successfully.
+
+
+
+
+
+stock_movements	CREATE TABLE `stock_movements` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `company_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `stock_id` int(100) NOT NULL,
+  `from_location_id` int(11) DEFAULT NULL,
+  `to_location_id` int(11) DEFAULT NULL,
+  `transfer_ID` varchar(100) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `movement_type` varchar(100) NOT NULL,
+  `reference` varchar(100) DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+
+127.0.0.1/newdb/stocks_assigned/		http://localhost/phpmyadmin/index.php?route=/table/sql&db=newdb&table=stocks_assigned
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE stock_production;
+
+
+127.0.0.1:3306/u940930907_ubamus/stock_production/		https://auth-db1163.hstgr.io/index.php?route=/table/sql&db=u940930907_ubamus&table=stock_production
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE stock_production;
+
+
+
+stock_production	CREATE TABLE `stock_production` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `product_id` int(100) NOT NULL,
+  `company_id` int(100) NOT NULL,
+  `location_id` int(100) NOT NULL,
+  `batch_number` varchar(100) NOT NULL,
+  `category_id` int(100) NOT NULL,
+  `quantity_produced` int(100) NOT NULL,
+  `unit_cost` decimal(50,0) NOT NULL,
+  `total_cost` decimal(50,0) NOT NULL,
+  `profit_margin` varchar(100) NOT NULL,
+  `unit_selling_price` decimal(50,0) NOT NULL,
+  `expenses_breakdown` text NOT NULL,
+  `status` varchar(20) NOT NULL,
+  `created_by` int(50) NOT NULL,
+  `created_at` varchar(50) NOT NULL,
+  `updated_at` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci	
+
+SHOW CREATE TABLE stock_production_stages;
+
+
+
+stock_production_stages	CREATE TABLE `stock_production_stages` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `production_id` int(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci	
+
+127.0.0.1/newdb/stocks_assigned/		http://localhost/phpmyadmin/index.php?route=/table/sql&db=newdb&table=stocks_assigned
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE stock_usage;
+
+
+
+stock_usage	CREATE TABLE `stock_usage` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `product_id` int(100) NOT NULL,
+  `quantity_used` varchar(100) NOT NULL,
+  `used_for` varchar(100) NOT NULL,
+  `reference_id` int(100) NOT NULL,
+  `recorded_by` varchar(100) NOT NULL,
+  `created_at` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci	
+
+127.0.0.1/newdb/stocks_assigned/		http://localhost/phpmyadmin/index.php?route=/table/sql&db=newdb&table=stocks_assigned
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE units;
+
+
+
+units	CREATE TABLE `units` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `company_id` int(100) NOT NULL,
+  `unit_name` varchar(100) NOT NULL,
+  `unit_type` varchar(100) NOT NULL,
+  `created_by` int(100) NOT NULL,
+  `created_at` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci	
+
+
+127.0.0.1/newdb/users/		http://localhost/phpmyadmin/index.php?route=/table/sql&db=newdb&table=users
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE users;
+
+
+
+users	CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(100) DEFAULT NULL,
+  `email` varchar(150) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `role` varchar(100) DEFAULT NULL,
+  `company_id` int(100) NOT NULL,
+  `location_id` int(50) DEFAULT NULL,
+  `status` varchar(100) DEFAULT NULL,
+  `created_at` varchar(100) NOT NULL,
+  `created_by` varchar(100) NOT NULL,
+  `changed_at` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=119 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci	
+
+127.0.0.1/newdb/vendors/		http://localhost/phpmyadmin/index.php?route=/table/sql&db=newdb&table=vendors
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE vendors;
+
+
+
+vendors	CREATE TABLE `vendors` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `company_id` int(100) NOT NULL,
+  `location_id` int(100) NOT NULL,
+  `business_name` varchar(100) NOT NULL,
+  `office_address` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `mobile` varchar(100) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `created_by` varchar(100) NOT NULL,
+  `created_at` varchar(50) NOT NULL,
+  `status` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci	
+
+127.0.0.1/newdb/vendors/		http://localhost/phpmyadmin/index.php?route=/table/sql&db=newdb&table=vendors
+Your SQL query has been executed successfully.
+
+SHOW CREATE TABLE vendor_products;
+
+
+
+vendor_products	CREATE TABLE `vendor_products` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `vendor_id` int(100) NOT NULL,
+  `product_id` int(100) NOT NULL,
+  `created_at` varchar(100) NOT NULL,
+  `created_by` int(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci	
+
+
