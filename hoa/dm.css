@@ -1,0 +1,49 @@
+.dm-box {
+    width: 100%;
+    height: 80vh;
+    background-color: transparent;
+    position: relative;
+}
+.chtbx {
+    width: 100%;
+    height: 15%;
+    display: block;
+    background-color: #f3f3f3;
+    position: relative;
+    border-top-left-radius: 22px;
+    border-top-right-radius: 22px;
+
+}
+.chtbxleft {
+ width: 80%;
+ height: 100%;
+ display: flex;
+ flex-direction: row;
+ justify-content: left;
+ align-items: center;
+ background-color: #f3f3f3;
+ border-top-left-radius: 22px;
+}
+.chtbxright {
+
+}
+.msgbx  {
+    width: 100%;
+    height: 90%;
+    position: relative;
+    background-color: #fff;
+    display: block;
+    justify-content: center;
+    align-items: center;
+}
+.date-bx {
+    width: 100%;
+    height: 3%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f3f3f3;
+}
+.date-bx p {
+    font-size: 12px;
+}
