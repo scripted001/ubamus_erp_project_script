@@ -422,7 +422,7 @@ Third-party libraries and components remain subject to their respective licences
 
 ## About the Developer
 
-I'm an independent software developer and business developer interested in building practical technology solutions around real business problems.
+I'm Omoeheffe Akiojano Henry, an independent software developer and business developer interested in building practical technology solutions around real business problems.
 
 My approach to software development extends beyond writing code. I enjoy understanding operational challenges, identifying opportunities, designing solutions and translating business requirements into functional applications.
 
