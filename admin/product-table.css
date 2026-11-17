@@ -1,0 +1,76 @@
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.product-table {
+  width: 100%;
+  min-width: 700px;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  background-color: transparent;
+}
+
+.product-table th,
+.product-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb; /* Tailwind gray-200 */
+}
+
+.product-table thead {
+  background-color: #f9fafb; /* Tailwind gray-50 */
+  color: #111827; /* Tailwind gray-900 */
+  font-weight: 600;
+}
+
+.product-table tbody tr:hover {
+  background-color: #f3f4f6; /* Tailwind gray-100 */
+}
+
+.table-img {
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+.actions-cell {
+  white-space: nowrap;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-action {
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 5px;
+  text-decoration: none;
+  color: white;
+  transition: background 0.2s ease-in-out;
+}
+
+.btn-action.view {
+  background-color: #3b82f6; /* blue-500 */
+}
+
+.btn-action.view:hover {
+  background-color: #2563eb; /* blue-600 */
+}
+
+.btn-action.edit {
+  background-color: #f59e0b; /* amber-500 */
+}
+
+.btn-action.edit:hover {
+  background-color: #d97706; /* amber-600 */
+}
+
+.btn-action.delete {
+  background-color: #ef4444; /* red-500 */
+}
+
+.btn-action.delete:hover {
+  background-color: #dc2626; /* red-600 */
+}

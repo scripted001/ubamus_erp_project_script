@@ -1,0 +1,96 @@
+<?php
+include('../config/db.php');
+include('../config/validation.php');
+include('user_data.php');
+include('../app_data.php');
+include('../company_data.php');
+
+date_default_timezone_set('Africa/Lagos');
+$company_id = (int)($_SESSION['company_id'] ?? 0);
+if ($company_id <= 0) {
+    header('Location: index.php');
+    exit;
+}
+
+$stmt = $pdo->prepare("SELECT p.*, c.name AS category_name FROM products p LEFT JOIN product_categories c ON p.category_id = c.id AND c.company_id = p.company_id WHERE p.company_id = ? ORDER BY p.created_at DESC");
+$stmt->execute([$company_id]);
+$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$productImages = [];
+if ($products) {
+    $imageStmt = $pdo->prepare("SELECT image_path FROM product_images WHERE product_id = ? ORDER BY id ASC LIMIT 1");
+    foreach ($products as $product) {
+        $imageStmt->execute([(int)$product['id']]);
+        $productImages[(int)$product['id']] = $imageStmt->fetchColumn() ?: '';
+    }
+}
+function productImageUrl($image) {
+    return '../uploads/products/' . rawurlencode(basename((string)$image));
+}
+?>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="content-type" content="text/html;charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title><?php echo htmlspecialchars($company_name ?? 'Company', ENT_QUOTES, 'UTF-8'); ?> | Products</title>
+<link rel="stylesheet" href="../fontawesome/css/all.css">
+<link href="style.css" rel="stylesheet">
+<link href="main.css" rel="stylesheet">
+<link href="product-table.css" rel="stylesheet">
+<style>
+.products-page-container{width:100%;max-width:1536px;margin:0 auto;padding:24px;position:relative}.products-visual-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}.products-orb{position:absolute;border-radius:9999px;filter:blur(2px);opacity:.12}.products-orb-one{width:220px;height:220px;top:10px;right:5%;background:#341893}.products-orb-two{width:140px;height:140px;top:260px;left:-50px;background:#6366f1}.products-orb-three{width:180px;height:180px;bottom:60px;right:-60px;background:#8b5cf6}.products-abstract-line{position:absolute;width:280px;height:280px;border:1px solid rgba(52,24,147,.1);border-radius:42% 58% 65% 35%;transform:rotate(25deg)}.products-line-one{top:90px;left:8%}.products-line-two{bottom:100px;right:10%;transform:rotate(-25deg)}.products-grid-pattern{position:absolute;top:0;right:0;width:260px;height:180px;opacity:.18;background-image:linear-gradient(rgba(52,24,147,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(52,24,147,.12) 1px,transparent 1px);background-size:22px 22px;mask-image:linear-gradient(to bottom left,black,transparent)}.dark .products-orb{opacity:.08}.dark .products-abstract-line{border-color:rgba(255,255,255,.06)}.dark .products-grid-pattern{opacity:.08}.products-content-layer{position:relative;z-index:1}.products-card{width:100%;overflow:hidden;border-radius:20px;border:1px solid #e5e7eb;background:#fff;position:relative;box-shadow:0 12px 35px rgba(15,23,42,.06)}.dark .products-card{border-color:#1f2937;background:rgba(255,255,255,.03);box-shadow:none}.products-card-header{padding:22px 24px;display:flex;align-items:center;justify-content:space-between;gap:18px;position:relative;overflow:hidden}.products-header-left{display:flex;align-items:center;gap:13px;min-width:0}.products-header-icon{width:46px;height:46px;min-width:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:rgba(52,24,147,.1);color:#341893;font-size:19px}.dark .products-header-icon{background:rgba(99,102,241,.12);color:#a78bfa}.products-card-header h3{margin:0;font-size:17px;font-weight:700;color:#1f2937}.dark .products-card-header h3{color:rgba(255,255,255,.92)}.products-header-subtitle{margin:4px 0 0;font-size:12px;color:#9ca3af}.products-header-decoration{position:absolute;right:120px;top:-50px;width:130px;height:130px;border:1px solid rgba(52,24,147,.1);border-radius:50%;pointer-events:none}.products-header-decoration:after{content:"";position:absolute;inset:20px;border:1px solid rgba(52,24,147,.08);border-radius:50%}.add-product-btn{position:relative;z-index:2;display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:43px;padding:11px 16px;border-radius:10px;background:#341893;color:#fff;text-decoration:none;font-size:13px;font-weight:700;white-space:nowrap;box-shadow:0 7px 16px rgba(52,24,147,.18);transition:all .2s ease}.add-product-btn:hover{background:#26106f;color:#fff;transform:translateY(-1px);box-shadow:0 10px 20px rgba(52,24,147,.24)}.dark .add-product-btn{background:#6d4aff;color:#fff}.product-search-wrapper{padding:18px 24px;border-top:1px solid #f1f5f9;border-bottom:1px solid #f1f5f9;background:rgba(248,250,252,.65)}.dark .product-search-wrapper{border-color:#1f2937;background:rgba(17,24,39,.35)}.product-search{width:100%;display:flex;gap:12px;align-items:stretch}.product-search-select{flex:0 0 220px;position:relative}.product-search-input{flex:1;position:relative}.product-search-select:before{content:"\f03a";font-family:"Font Awesome 6 Free";font-weight:900;position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#8b5cf6;z-index:2;pointer-events:none}.product-search-input:before{content:"\f002";font-family:"Font Awesome 6 Free";font-weight:900;position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#9ca3af;z-index:2;pointer-events:none}.product-search .form-control{min-height:44px;width:100%;box-sizing:border-box;border:1px solid #d1d5db;border-radius:10px;background:#fff;color:#374151;outline:none;transition:all .2s ease}.product-search-select .form-control{padding-left:40px}.product-search-input .form-control{padding-left:42px}.product-search .form-control:focus{border-color:#8b5cf6;box-shadow:0 0 0 3px rgba(139,92,246,.1)}.dark .product-search .form-control{background:#111827;border-color:#374151;color:rgba(255,255,255,.9)}.product-table-container{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}.product-table{width:100%;min-width:760px;border-collapse:collapse}.product-table th,.product-table td{vertical-align:middle;padding:13px 15px;text-align:left;border-bottom:1px solid #f1f5f9}.dark .product-table th,.dark .product-table td{border-color:#1f2937}.product-table th{white-space:nowrap;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:#6b7280;background:rgba(248,250,252,.7)}.dark .product-table th{background:rgba(17,24,39,.4);color:#9ca3af}.product-table td{font-size:13px;color:#4b5563}.dark .product-table td{color:#d1d5db}.product-table tbody tr{transition:background .2s ease}.product-table tbody tr:hover{background:rgba(52,24,147,.025)}.dark .product-table tbody tr:hover{background:rgba(255,255,255,.025)}.table-img{width:55px;height:55px;object-fit:cover;border-radius:11px;display:block;border:1px solid #e5e7eb;background:#f8fafc}.dark .table-img{border-color:#374151;background:#111827}.table-image-placeholder{width:55px;height:55px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:#f3f4f6;color:#9ca3af;font-size:16px}.dark .table-image-placeholder{background:#1f2937}.actions-cell{min-width:300px}.actions-wrapper{display:flex;flex-wrap:wrap;gap:7px;align-items:center}.actions-wrapper form{margin:0;padding:0}.btn-action{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:34px;padding:7px 11px;border-radius:7px;text-decoration:none;white-space:nowrap;font-size:13px;line-height:1.2;box-sizing:border-box;border:0;cursor:pointer;transition:all .2s ease}.btn-action i{font-size:12px}.btn-action.view{background:rgba(52,24,147,.09);color:#341893}.btn-action.view:hover{background:#341893;color:#fff;transform:translateY(-1px)}.btn-action.edit{background:rgba(14,116,144,.09);color:#0e7490}.btn-action.edit:hover{background:#0e7490;color:#fff;transform:translateY(-1px)}.btn-action.delete{background:rgba(220,38,38,.08);color:#dc2626}.btn-action.delete:hover{background:#dc2626;color:#fff;transform:translateY(-1px)}.dark .btn-action.view{background:rgba(139,92,246,.12);color:#c4b5fd}.dark .btn-action.edit{background:rgba(34,211,238,.1);color:#67e8f9}.dark .btn-action.delete{background:rgba(248,113,113,.1);color:#fca5a5}.mobile-products{display:none}.mobile-product-item{width:100%;box-sizing:border-box;padding:17px;border-top:1px solid #f1f5f9}.dark .mobile-product-item{border-color:#1f2937}.mobile-product-top{display:flex;align-items:flex-start;gap:14px}.mobile-product-image,.mobile-product-image-placeholder{width:72px;height:72px;min-width:72px;object-fit:cover;border-radius:13px;display:flex;align-items:center;justify-content:center;background:#f3f4f6;border:1px solid #e5e7eb}.mobile-product-image-placeholder{color:#9ca3af;font-size:18px}.dark .mobile-product-image-placeholder{background:#1f2937;color:#9ca3af}.mobile-product-info{min-width:0;flex:1}.mobile-product-number{font-size:10px;color:#8b5cf6;margin-bottom:4px;text-transform:uppercase;font-weight:700;letter-spacing:.05em}.mobile-product-name{margin:0 0 6px;font-size:15px;font-weight:600;color:#1f2937;overflow-wrap:anywhere}.dark .mobile-product-name{color:rgba(255,255,255,.92)}.mobile-product-category{margin:0 0 5px;font-size:13px;color:#6b7280;overflow-wrap:anywhere}.mobile-product-category i{margin-right:4px;color:#8b5cf6}.dark .mobile-product-category{color:#9ca3af}.mobile-product-date{margin:0;font-size:12px;color:#9ca3af}.mobile-product-date i{margin-right:4px}.mobile-product-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}.mobile-product-actions .btn-action{width:100%;min-height:40px}.mobile-product-actions form{width:100%;margin:0}.mobile-product-actions form button{width:100%}.products-empty{padding:45px 20px;text-align:center;color:#9ca3af}.products-empty i{display:block;font-size:30px;margin-bottom:10px;opacity:.55}@media(max-width:900px){.products-page-container{padding:18px}.products-card-header{padding:18px}.product-search-wrapper{padding:18px}.product-search-select{flex:0 0 190px}}@media(max-width:640px){.products-page-container{padding:10px}.products-card{border-radius:14px}.products-card-header{padding:16px;align-items:flex-start;flex-wrap:wrap}.products-header-icon{width:40px;height:40px;min-width:40px;border-radius:11px}.products-card-header h3{font-size:15px}.products-header-subtitle{font-size:11px}.add-product-btn{width:100%;box-sizing:border-box}.product-search-wrapper{padding:14px}.product-search{flex-direction:column;gap:10px}.product-search-select,.product-search-input{flex:none;width:100%}.desktop-products{display:none}.mobile-products{display:block}.mobile-product-actions{grid-template-columns:1fr 1fr}.products-orb-one{width:130px;height:130px}.products-orb-three{width:100px;height:100px}}@media(max-width:380px){.products-page-container{padding:6px}.products-card-header{padding:14px}.product-search-wrapper{padding:12px}.mobile-product-item{padding:14px}.mobile-product-top{gap:10px}.mobile-product-image,.mobile-product-image-placeholder{width:60px;height:60px;min-width:60px}.mobile-product-actions{grid-template-columns:1fr}}
+</style>
+</head>
+<body x-data="{page:'ecommerce',loaded:true,darkMode:false,stickyMenu:false,sidebarToggle:false,scrollTop:false}" x-init="darkMode=JSON.parse(localStorage.getItem('darkMode')); $watch('darkMode',value=>localStorage.setItem('darkMode',JSON.stringify(value)))" :class="{'dark bg-gray-900':darkMode===true}">
+<div class="flex h-screen overflow-hidden">
+<?php include('sidebar.php'); ?>
+<div class="relative flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
+<main>
+<?php include('header.php'); ?>
+<div class="products-page-container">
+<div class="products-visual-bg"><div class="products-orb products-orb-one"></div><div class="products-orb products-orb-two"></div><div class="products-orb products-orb-three"></div><div class="products-abstract-line products-line-one"></div><div class="products-abstract-line products-line-two"></div><div class="products-grid-pattern"></div></div>
+<div class="products-content-layer"><div class="products-card">
+<div class="products-card-header">
+<div class="products-header-left"><div class="products-header-icon"><i class="fa-solid fa-boxes-stacked"></i></div><div><h3>Company Products</h3><p class="products-header-subtitle">Manage, review and organise your products</p></div></div>
+
+<div class="products-header-decoration"></div>
+</div>
+<div class="product-search-wrapper"><div class="product-search"><div class="product-search-select"><select id="search_option" class="form-control"><option value="name">Search by Name</option><option value="category">Search by Category</option><option value="date">Search by Date</option></select></div><div class="product-search-input"><input type="text" id="search_value" placeholder="Search products..." class="form-control"></div></div></div>
+<div class="desktop-products"><div class="product-table-container"><table class="product-table"><thead><tr><th>#</th><th><i class="fa-regular fa-image"></i> Image</th><th><i class="fa-solid fa-box"></i> Name</th><th><i class="fa-solid fa-layer-group"></i> Category</th><th><i class="fa-regular fa-calendar"></i> Created</th><th><i class="fa-solid fa-sliders"></i> Actions</th></tr></thead><tbody id="productTable">
+<?php if ($products): foreach ($products as $index => $product): $img = $productImages[(int)$product['id']] ?? ''; ?>
+<tr><td><?= $index + 1 ?></td><td><?php if ($img): ?><img src="<?= htmlspecialchars(productImageUrl($img), ENT_QUOTES, 'UTF-8') ?>" class="table-img" alt="<?= htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8') ?>"><?php else: ?><div class="table-image-placeholder"><i class="fa-regular fa-image"></i></div><?php endif; ?></td><td><?= htmlspecialchars($product['name'] ?? '', ENT_QUOTES, 'UTF-8') ?></td><td><?= htmlspecialchars($product['category_name'] ?? '-', ENT_QUOTES, 'UTF-8') ?></td><td><?= !empty($product['created_at']) ? date('d M Y', strtotime($product['created_at'])) : '-' ?></td><td class="actions-cell"><div class="actions-wrapper"><a href="view_product.php?id=<?= (int)$product['id'] ?>" class="btn-action view"><i class="fa-solid fa-eye"></i> View</a></div></td></tr>
+<?php endforeach; else: ?><tr><td colspan="6" class="products-empty"><i class="fa-solid fa-box-open"></i>No products found.</td></tr><?php endif; ?>
+</tbody></table></div></div>
+<div class="mobile-products" id="mobileProductTable">
+<?php if ($products): foreach ($products as $index => $product): $img = $productImages[(int)$product['id']] ?? ''; ?>
+<div class="mobile-product-item"><div class="mobile-product-top"><?php if ($img): ?><img src="<?= htmlspecialchars(productImageUrl($img), ENT_QUOTES, 'UTF-8') ?>" class="mobile-product-image" alt="<?= htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8') ?>"><?php else: ?><div class="mobile-product-image-placeholder"><i class="fa-solid fa-box-open"></i></div><?php endif; ?><div class="mobile-product-info"><div class="mobile-product-number"><i class="fa-solid fa-box"></i> Product #<?= $index + 1 ?></div><h4 class="mobile-product-name"><?= htmlspecialchars($product['name'] ?? '', ENT_QUOTES, 'UTF-8') ?></h4><p class="mobile-product-category"><i class="fa-solid fa-layer-group"></i> Category: <?= htmlspecialchars($product['category_name'] ?? '-', ENT_QUOTES, 'UTF-8') ?></p><p class="mobile-product-date"><i class="fa-regular fa-calendar"></i> Created: <?= !empty($product['created_at']) ? date('d M Y', strtotime($product['created_at'])) : '-' ?></p></div></div><div class="mobile-product-actions"><a href="view_product.php?id=<?= (int)$product['id'] ?>" class="btn-action view"><i class="fa-solid fa-eye"></i> View</a></div></div>
+<?php endforeach; else: ?><div class="products-empty"><i class="fa-solid fa-box-open"></i>No products found.</div><?php endif; ?>
+</div>
+</div></div></div>
+</main>
+<?php include('footer.php'); ?>
+</div></div>
+<script data-cfasync="false" src="cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script defer src="bundle.js"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"rayId":"95aeba634cdfb6e3","version":"2025.6.2","r":1,"serverTiming":{"name":"cfExtPri","cfExtPri":true,"cfSpeedBrain":true,"cfCacheStatus":true},"token":"67f7a278e3374824ae6dd92295d38f77","b":1}' crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function(){
+ function filterProducts(){
+  const option=$('#search_option').val();
+  const searchValue=$('#search_value').val().trim().toLowerCase();
+  let desktopVisible=0,mobileVisible=0;
+  $('#productTable > tr').each(function(){const row=$(this);if(row.hasClass('product-filter-empty'))return;const name=row.find('td').eq(2).text().trim().toLowerCase();const category=row.find('td').eq(3).text().trim().toLowerCase();const created=row.find('td').eq(4).text().trim().toLowerCase();let value=option==='name'?name:(option==='category'?category:created);const matches=searchValue===''||value.includes(searchValue);row.toggle(matches);if(matches)desktopVisible++;});
+  $('#mobileProductTable .mobile-product-item').each(function(){const card=$(this);const name=card.find('.mobile-product-name').text().trim().toLowerCase();const category=card.find('.mobile-product-category').text().trim().toLowerCase();const created=card.find('.mobile-product-date').text().trim().toLowerCase();let value=option==='name'?name:(option==='category'?category:created);const matches=searchValue===''||value.includes(searchValue);card.toggle(matches);if(matches)mobileVisible++;});
+  $('#productTable .product-filter-empty').remove();$('#mobileProductTable .product-filter-empty').remove();
+  if(desktopVisible===0)$('#productTable').append('<tr class="product-filter-empty"><td colspan="6" style="text-align:center;padding:30px;color:#9ca3af"><i class="fa-solid fa-box-open" style="display:block;font-size:28px;margin-bottom:10px;opacity:.55"></i>No products found.</td></tr>');
+  if(mobileVisible===0)$('#mobileProductTable').append('<div class="product-filter-empty products-empty"><i class="fa-solid fa-box-open"></i>No products found.</div>');
+ }
+ $('#search_value').on('input',filterProducts);$('#search_option').on('change',filterProducts);filterProducts();
+});
+</script>
+</body>
+</html>
