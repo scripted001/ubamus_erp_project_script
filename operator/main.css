@@ -1,0 +1,18 @@
+.table-card {
+    width: 100%;
+    height: auto;
+    display: flex;
+    background-color: transparent;
+    justify-content: space-between;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: left;
+    border-top: 1.5px solid #262626;
+}
+.subjects {
+    width: 40%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: left;
+}
